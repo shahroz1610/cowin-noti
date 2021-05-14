@@ -1,8 +1,7 @@
-from typing import Sequence
 import requests
 import smtplib
 import time
-import json
+import pickle
 
 def get_state_id():
     get_state_url = "https://cdn-api.co-vin.in/api/v2/admin/location/states"
@@ -46,7 +45,18 @@ def check_slots(pincode,vaccine_slots,by_district=False):
             if session['available_capacity'] > 0 and session['min_age_limit']==18:
                 sess = session
                 sess['name'] = centre_name
-                vaccine_slots.append(sess)
+                try:
+                    with open('booked.pickle','rb') as f:
+                        booked = pickle.load(f)
+                        if booked[sess['session_id']] == 1:
+                            pass
+                except Exception as e:
+                    with open('booked.pickle','rb') as f:
+                        booked = pickle.load(f)
+                        booked[sess['session_id']] = 1
+                    with open('booked.pickle','rb') as f:
+                        pickle.dump(booked,f,protocol=pickle.HIGHEST_PROTOCOL)
+                    vaccine_slots.append(sess)
     return vaccine_slots
 def make_str(res):
     # print(len(res))
@@ -98,13 +108,14 @@ if __name__ == '__main__':
             'pincodes' : ['444203'],
             'recepients' : ['mshahroz8@gmail.com'],
             'flag' : True,
+        },
+        'Hyderabad' : {
+            'pincodes' : ['500028','500001','500033','500002','500008','500034','500012','500003','500053','500044','500048','500064'],
+            'recepients' : ['iftekhar_ali@rediffmail.com']
         }
     }
     curr_time = time.time()
-    while True:
-        duration = 300
-        if time.time() - curr_time >= duration:
-            curr_time = time.time()
+    for i in range(1):
             for city in cities:
                 vaccine_slots = []
                 if cities[city]['flag'] == True:
