@@ -51,11 +51,17 @@ def check_slots(pincode,vaccine_slots,by_district=False):
                         if booked[sess['session_id']] == 1:
                             pass
                 except Exception as e:
-                    with open('booked.pickle','rb') as f:
-                        booked = pickle.load(f)
-                        booked[sess['session_id']] = 1
-                    with open('booked.pickle','rb') as f:
-                        pickle.dump(booked,f,protocol=pickle.HIGHEST_PROTOCOL)
+                    try:
+                        with open('booked.pickle','rb') as f:
+                            booked = pickle.load(f)
+                            booked[sess['session_id']] = 1
+                        with open('booked.pickle','wb') as f:
+                            pickle.dump(booked,f,protocol=pickle.HIGHEST_PROTOCOL)
+                    except Exception as e:
+                        booked = {sess['session_id'] : 1}
+                        with open('booked.pickle','wb') as f:
+                            pickle.dump(booked,f,protocol=pickle.HIGHEST_PROTOCOL)
+                    
                     vaccine_slots.append(sess)
     return vaccine_slots
 def make_str(res):
@@ -94,25 +100,10 @@ if __name__ == '__main__':
         'Indore' : {
             'pincodes' : ['452001','452002','452003','452004','452004','452005','452006','452007','452008','452009','452010','452011'],
             'recepients' : [
-                'anuragraghuvanshi65@gmail.com','monilbrahamwanshi@gmail.com','anuragraghucode@gmail.com','arpitspatil@gmail.com','mshahroz8@gmail.com',
-                'shrinivasagrawal2001@gmail.com'
+                # add mail id of recepients here
                 ],
             'flag' : True,
         },
-        'Bhopal' : {
-            'pincodes' : ['462023'],
-            'recepients' : ['shreyanshmehra786@gmail.com'],
-            'flag' : True,
-        },
-        'Shegaon' : {
-            'pincodes' : ['444203'],
-            'recepients' : ['mshahroz8@gmail.com'],
-            'flag' : True,
-        },
-        'Hyderabad' : {
-            'pincodes' : ['500028','500001','500033','500002','500008','500034','500012','500003','500053','500044','500048','500064'],
-            'recepients' : ['iftekhar_ali@rediffmail.com']
-        }
     }
     curr_time = time.time()
     for i in range(1):
