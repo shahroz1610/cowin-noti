@@ -79,8 +79,9 @@ def make_str(res):
     return s
 
 def send_mail(recepients,vaccine_slots):
-    sender = 'mshahroz161099@gmail.com'
-    password = 'dyzfrznrqzmitpcs'
+    # Enter the credentials
+    sender = ''  
+    password = ''
     subject = "Hurry!! Vaccine Slots available in your area"
     message = 'Subject: {}\n\n{}'.format(subject, make_str(vaccine_slots))
     smtp_server = smtplib.SMTP('smtp.gmail.com',587)
@@ -115,7 +116,3 @@ if __name__ == '__main__':
                     if len(vaccine_slots)>0:
                         send_mail(cities[city]['recepients'],vaccine_slots)
                         cities[city]['flag'] = False
-
-            
-
-
